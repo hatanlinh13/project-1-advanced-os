@@ -64,6 +64,7 @@ int main(int argc, char **argv)
 	else
 		automatic_mode(sockfd, &inf);
 
+	/* free allocated data */
 	if (inf.pattern)
 		free(inf.pattern);
 	return 0;
@@ -72,7 +73,8 @@ int main(int argc, char **argv)
 void usage_exit(const char *prog_name)
 {
 	fprintf(stderr, "Error: Invalid command line arguments!\n");
-	fprintf(stdout, "Usage: %s [<server ip> <server port>] [-c]\n", prog_name);
+	fprintf(stdout, "Usage: %s [<server ip> <server port>] [-c <file name>]\n",
+            prog_name);
 	exit(EXIT_FAILURE);
 }
 

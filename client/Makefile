@@ -2,14 +2,15 @@
 # Client Side
 #
 # 1512284 - Ha Tan Linh
-#
-# Module: Makefile
 
 CC = gcc
 
 .PHONY: all clean
 
-all:
+all: client
+
+client: client.c
+	$(CC) client.c -o client
 
 clean:
-
+	rm client

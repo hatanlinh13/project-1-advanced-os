@@ -2,14 +2,15 @@
 # Server Side
 #
 # 1512284 - Ha Tan Linh
-#
-# Module: Makefile
 
 CC = gcc
 
 .PHONY: all clean
 
-all:
+all: server
+
+server: server.c
+	$(CC) server.c -o server
 
 clean:
-
+	rm server

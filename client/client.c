@@ -67,6 +67,7 @@ int main(int argc, char **argv)
 	/* free allocated data */
 	if (inf.pattern)
 		free(inf.pattern);
+	close(sockfd);
 	return 0;
 }
 
@@ -122,34 +123,34 @@ int parser(int argc, char **argv,
 	case 1:
 		if (inet_pton(AF_INET, LOCALHOST, &serv_addr->sin_addr) <= 0)
 			error_exit("Invalid server IP address.");
-		serv_addr->sin_port = htonl(DEFAULT_PORT);
+		serv_addr->sin_port = htons(DEFAULT_PORT);
 		rslt = 1;
 		break;
 	case 3:
 		if (strncmp(argv[1], "-c", 2) == 0) {
 			if (inet_pton(AF_INET, LOCALHOST, &serv_addr->sin_addr) <= 0)
 				error_exit("Invalid server IP address.");
-			serv_addr->sin_port = htonl(DEFAULT_PORT);
+			serv_addr->sin_port = htons(DEFAULT_PORT);
 
 			get_config(argv[2], inf);
-			rslt = 1;
 		}
 		else {
 			if (inet_pton(AF_INET, argv[1], &serv_addr->sin_addr) <= 0)
 				error_exit("Invalid server IP address.");
-			serv_addr->sin_port = htonl(atoi(argv[2]));
+			serv_addr->sin_port = htons(atoi(argv[2]));
+			rslt = 1;
 		}
 		break;
 	case 5:
 		if (inet_pton(AF_INET, argv[1], &serv_addr->sin_addr) <= 0)
 			error_exit("Invalid server IP address.");
-		serv_addr->sin_port = htonl(atoi(argv[2]));
+		serv_addr->sin_port = htons(atoi(argv[2]));
 		if (strncmp(argv[3], "-c", 2) == 0) {
 			if (inet_pton(AF_INET, LOCALHOST, &serv_addr->sin_addr) <= 0)
 				error_exit("Invalid server IP address.");
-			serv_addr->sin_port = htonl(DEFAULT_PORT);
+			serv_addr->sin_port = htons(DEFAULT_PORT);
 
-			get_config(argv[2], inf);
+			get_config(argv[4], inf);
 		}
 		else {
 			usage_exit(argv[0]);
@@ -179,7 +180,7 @@ void interactive_mode(int sockfd)
 				error_exit("Cannot send data.");
 		}
 		else if (strncmp(cmd, "Sub", 3) == 0) {
-			if (send(sockfd, "Sub", 3, 0) == 0)
+			if (send(sockfd, "Sub", 3, 0) == 3)
 				printf("Sub command sent to server.\n");
 			else
 				error_exit("Cannot send data.");
@@ -195,7 +196,7 @@ void automatic_mode(int sockfd, struct automode_info *inf)
 	int i     = 1;
 	int slide = 0;
 	while (1) {
-		printf("Turn %d:", i);
+		printf("Turn %d: ", i);
 
 		if (inf->pattern[slide] == 1) { /* add */
 			if (send(sockfd, "Add", 3, 0) == 3)

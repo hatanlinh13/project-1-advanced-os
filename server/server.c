@@ -99,8 +99,8 @@ int main(int argc, char **argv)
 			for (int i = 0; i < MAX_CLIENTS; i++)
 				if (client_sock[i] == 0) {
 					client_sock[i] = new_sock;
-					if (new_sock + 1 > n_client)
-						n_client = new_sock + 1;
+					if (i + 1 > n_client)
+						n_client = i + 1;
 
 					break;
 				}
